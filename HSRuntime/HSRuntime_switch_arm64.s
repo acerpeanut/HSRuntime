@@ -6,49 +6,6 @@
 //  Copyright © 2016年 HS. All rights reserved.
 //
 
-//	.section	__TEXT,__cstring,cstring_literals
-//Lhs_origin_method_pre:                                 ; @.str
-//	.asciz	"hs_execute_block_"
-//
-//    .section	__DATA,__data
-//	.globl	_hs_execute_block_origin_method                  ; @hs_execute_block_origin_method
-//_hs_execute_block_origin_method:
-//	.asciz	"hs_execute_block_000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-//
-//	.section	__TEXT,__text,regular,pure_instructions
-//	.ios_version_min 9, 1
-//
-//    .align 2
-//SelectorForOriginMethod:
-//    stp	x29, x30, [sp, #-16]!
-//	mov	 x29, sp
-//	sub	sp, sp, #32
-//    str  x0, [x29, #-24]
-//
-//	adrp	x8, _hs_execute_block_origin_method@PAGE
-//	add	x8, x8, _hs_execute_block_origin_method@PAGEOFF
-//	adrp	x9, Lhs_origin_method_pre@PAGE
-//	add	x1, x9, Lhs_origin_method_pre@PAGEOFF
-//	movz	x2, #0x64
-//
-//	strb		wzr, [x8]
-//
-//    str  x8, [x29, #-32]
-//
-//	mov	 x0, x8
-//	bl	___strcat_chk
-//
-//
-//    ldr  x1, [x29, #-24]
-//    ldr  x0, [x29, #-32]
-//    movz	x2, #0x64
-//	bl	___strcat_chk
-//
-//    bl _sel_registerName
-//
-//	mov	 sp, x29
-//	ldp	x29, x30, [sp], #16
-//    ret
 
 #if defined(__arm64__)
 	.globl	_hs_switch_block_func
@@ -64,9 +21,6 @@ _hs_switch_block_func:        ; @hs_switch_block_func
 
 // save x8 if a struct will be returned (location)
     str		x8, [x9, #8]
-
-//	adrp	x8, __hs_tmp_store@PAGE
-//	add	x8, x8, __hs_tmp_store@PAGEOFF
 
 // save x0~x7 for params
     str		x0, [x9, #0x80]
