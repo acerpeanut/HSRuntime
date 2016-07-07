@@ -27,10 +27,21 @@ extern void hs_switch_block_func_stret();
 }
 
 
-- (void)hs_executeBlockForOriginSelector:(SEL)selector {
+- (void)hs_executeBlockBeforeMethod:(SEL)selector {
     // 执行插入的block
     NSMutableDictionary *executeBlocks = [self hs_executeBlocks];
-    void (^executeBlock)() = executeBlocks[NSStringFromSelector(selector)];
+    NSString *beforeKey = [NSString stringWithFormat:@"%@_before", NSStringFromSelector(selector)];
+    void (^executeBlock)() = executeBlocks[beforeKey];
+    if (executeBlock) {
+        executeBlock();
+    }
+}
+
+- (void)hs_executeBlockAfterMethod:(SEL)selector {
+    // 执行插入的block
+    NSMutableDictionary *executeBlocks = [self hs_executeBlocks];
+    NSString *afterKey = [NSString stringWithFormat:@"%@_after", NSStringFromSelector(selector)];
+    void (^executeBlock)() = executeBlocks[afterKey];
     if (executeBlock) {
         executeBlock();
     }
@@ -48,24 +59,32 @@ static char executeBlocksKey;
     return blocks;
 }
 
-- (void)hs_executeBlock:(void (^)())block onMethodRun:(SEL)originSelector {
+- (void)hs_executeBlockOnMethodRun:(SEL)originSelector
+                            before:(void (^)())before
+                             after:(void (^)())after {
 #if defined(__arm64__) || defined(__x86_64__)
     Class clazz = [self class];
     
     Method originMethod = class_getInstanceMethod(clazz, originSelector);
     IMP implement = method_getImplementation(originMethod);
     
-    // 用 "hs_execute_block_%@"方法 保存原来的方法
+    // 用 Sel 替换成 "hs_execute_block_%@"
     SEL replaceSelector = [self hs_selectorForOriginMethod:originSelector];
     NSString *replaceSelectorName = NSStringFromSelector(replaceSelector);
     
-    [self hs_executeBlocks][replaceSelectorName] = block;
+    // 保存要执行的block
+    NSString *beforeKey = [NSString stringWithFormat:@"%@_before", replaceSelectorName];
+    NSString *afterKey = [NSString stringWithFormat:@"%@_after", replaceSelectorName];
     
-
+    [self hs_executeBlocks][beforeKey] = before;
+    [self hs_executeBlocks][afterKey] = after;
+    
+    // 保存原来的方法 "hs_execute_block_%@"
     if (! [self respondsToSelector:replaceSelector]) {
         class_addMethod([self class], replaceSelector, implement, method_getTypeEncoding(originMethod));
     }
-  
+    
+    // 替换成后来的方法 "hs_switch_block_func(_stret)"
     IMP replaceImplement = (IMP)hs_switch_block_func;
 #if defined(__x86_64__)
     // if a struct with size bigger than 16 will return, set to ...stret
@@ -76,13 +95,12 @@ static char executeBlocksKey;
         replaceImplement = (IMP)hs_switch_block_func_stret;
     }
 #endif
-
+    
     method_setImplementation(originMethod, replaceImplement);
     
 #else
 #warning "Not support i386 or armv7 yet"
 #endif
-    
 }
 
 + (void)hs_swizzleMethod:(SEL)originSelector withMethod:(SEL)replaceSelector {

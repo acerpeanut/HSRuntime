@@ -19,9 +19,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    [self hs_executeBlock:^{
-        NSLog(@"called when viewWillAppear finish");
-    } onMethodRun:@selector(viewWillAppear:)];
+    [self hs_executeBlockOnMethodRun:@selector(viewWillAppear:) before:^{
+        NSLog(@"viewWillAppear: - before");
+    } after:^{
+        NSLog(@"viewWillAppear: - after");
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

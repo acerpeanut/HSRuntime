@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "HSRuntime"
-  s.version      = "0.0.1"
+  s.version      = "0.0.2"
   s.summary      = "Easy way to use Objc runtime."
   s.homepage     = "https://github.com/acerpeanut/HSRuntime"
 

@@ -49,12 +49,23 @@ _hs_switch_block_func:        ; @hs_switch_block_func
     mov x1, x8
 
     bl _objc_msgSend
-
-    // x0(originMethodReturn) = [self x0]
-    mov x1, x0
-
     adrp	x9, __hs_tmp_store@PAGE
 	add	x9, x9, __hs_tmp_store@PAGEOFF
+    str		x0, [x9, #0x18] // replaceSelector
+
+    // [self hs_executeBlockBeforeMethod:originSelector]
+    ldr     x2, [x9, #0x18]
+    ldr		x0, [x9, #0x80]
+    adrp	x8, L_OBJC_SELECTOR_REFERENCES_.4@PAGE
+	ldr	x8, [x8, L_OBJC_SELECTOR_REFERENCES_.4@PAGEOFF]
+    mov     x1, x8
+
+    bl _objc_msgSend
+
+    // x0(originMethodReturn) = [self x0]
+    adrp	x9, __hs_tmp_store@PAGE
+	add	x9, x9, __hs_tmp_store@PAGEOFF
+    ldr     x1, [x9, #0x18]
 
 // restore interger/pointer params
     str     x1, [x9, #0x88]
@@ -78,28 +89,27 @@ _hs_switch_block_func:        ; @hs_switch_block_func
     ldr     x8, [x9, #8]
 
     bl	_objc_msgSend
-
     // save x0(originMethodReturn)
-    adrp	x8, __hs_tmp_store@PAGE
-	add	x8, x8, __hs_tmp_store@PAGEOFF
-    str		x0, [x8, #0x10]
+    adrp	x9, __hs_tmp_store@PAGE
+	add	x9, x9, __hs_tmp_store@PAGEOFF
+    str		x0, [x9, #0x10]
 
-    // [self hs_executeBlockForOriginSelector:originSelector]
+    // [self hs_executeBlockAfterMethod:originSelector]
 
-    ldr     x2, [x8, #0x88]
-    ldr		x0, [x8, #0x80]
-    adrp	x8, L_OBJC_SELECTOR_REFERENCES_.4@PAGE
-	ldr	x8, [x8, L_OBJC_SELECTOR_REFERENCES_.4@PAGEOFF]
+    ldr     x2, [x9, #0x18]
+    ldr		x0, [x9, #0x80]
+    adrp	x8, L_OBJC_SELECTOR_REFERENCES_.6@PAGE
+	ldr	x8, [x8, L_OBJC_SELECTOR_REFERENCES_.6@PAGEOFF]
     mov x1, x8
 
     bl _objc_msgSend
 
     // return originMethodReturn, and restore x30
-    adrp	x8, __hs_tmp_store@PAGE
-	add	x8, x8, __hs_tmp_store@PAGEOFF
-    ldr		x0, [x8, #0x10]
-	ldr		X30, [x8]
-    ldr     x8, [x8, #8] // no need to restore x8, just ...
+    adrp	x9, __hs_tmp_store@PAGE
+	add	x9, x9, __hs_tmp_store@PAGEOFF
+    ldr		x0, [x9, #0x10]
+	ldr		X30, [x9]
+    ldr     x8, [x9, #8] // no need to restore x8, just ...
     
     ret
 
@@ -116,21 +126,32 @@ L_OBJC_SELECTOR_REFERENCES_.2:
 
     .section	__TEXT,__objc_methname,cstring_literals
 L_OBJC_METH_VAR_NAME_.3:               ; @OBJC_METH_VAR_NAME_.36
-	.asciz	"hs_executeBlockForOriginSelector:"
+	.asciz	"hs_executeBlockBeforeMethod:"
 
 	.section	__DATA,__objc_selrefs,literal_pointers,no_dead_strip
 	.align	3                       ; @OBJC_SELECTOR_REFERENCES_.37
 L_OBJC_SELECTOR_REFERENCES_.4:
 	.quad	L_OBJC_METH_VAR_NAME_.3
 
+    .section	__TEXT,__objc_methname,cstring_literals
+L_OBJC_METH_VAR_NAME_.5:               ; @OBJC_METH_VAR_NAME_.36
+	.asciz	"hs_executeBlockAfterMethod:"
+
+	.section	__DATA,__objc_selrefs,literal_pointers,no_dead_strip
+	.align	3                       ; @OBJC_SELECTOR_REFERENCES_.37
+L_OBJC_SELECTOR_REFERENCES_.6:
+	.quad	L_OBJC_METH_VAR_NAME_.5
+
+
+
 
 	.section	__DATA,__data
 	.globl	__hs_tmp_store                  ; @kexue
 	.align	3
 __hs_tmp_store:
-	.quad	1                       ; 0x1
-	.quad	2                       ; 0x2
-    .quad	3                       ; 0x3
+	.quad	1                       ; 0x1 (return)
+	.quad	2                       ; 0x2 (x8)
+    .quad	3                       ; 0x3 (replaceSelector)
     .quad	4                       ; 0x3
     .quad	5                       ; 0x3
     .quad	6                       ; 0x3

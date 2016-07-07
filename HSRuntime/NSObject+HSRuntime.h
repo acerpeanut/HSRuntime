@@ -25,6 +25,7 @@
 + (NSArray <HSProperty *>*)hs_allProperties;
 - (NSArray <HSProperty *>*)hs_allProperties;
 
-- (void)hs_executeBlock:(void (^)())block onMethodRun:(SEL)originSelector;
+- (void)hs_executeBlockOnMethodRun:(SEL)originSelector before:(void (^)())before after:(void (^)())after;
+
 
 @end

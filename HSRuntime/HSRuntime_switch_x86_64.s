@@ -44,6 +44,13 @@ _hs_switch_block_func:
     callq	_objc_msgSend
     movq	%rax, __hs_tmp_store+80(%rip)
 
+    // [self hs_executeBlockBeforeMethod:originSelector]
+    movq	__hs_tmp_store+80(%rip), %rdx
+    movq	L_OBJC_SELECTOR_REFERENCES_.4(%rip), %rsi
+    movq	__hs_tmp_store+8(%rip), %rdi
+
+    callq   _objc_msgSend
+
     // x0(originMethodReturn) = [self x0]
     movq	__hs_tmp_store+80(%rip), %rsi
     movq	__hs_tmp_store+8(%rip), %rdi
@@ -65,9 +72,9 @@ _hs_switch_block_func:
     movq	%rax, __hs_tmp_store+88(%rip)
     movsd   %xmm0, __hs_tmp_store+328(%rip)
 
-    // [self hs_executeBlockForOriginSelector:originSelector]
+    // [self hs_executeBlockAfterMethod:originSelector]
     movq	__hs_tmp_store+80(%rip), %rdx
-    movq	L_OBJC_SELECTOR_REFERENCES_.4(%rip), %rsi
+    movq	L_OBJC_SELECTOR_REFERENCES_.6(%rip), %rsi
     movq	__hs_tmp_store+8(%rip), %rdi
 
     callq   _objc_msgSend
@@ -115,6 +122,11 @@ _hs_switch_block_func_stret:
     callq	_objc_msgSend
     movq	%rax, __hs_tmp_store+80(%rip)
 
+    // [self hs_executeBlockBeforeMethod:originSelector]
+    movq	__hs_tmp_store+80(%rip), %rdx
+    movq	L_OBJC_SELECTOR_REFERENCES_.4(%rip), %rsi
+    movq	__hs_tmp_store+16(%rip), %rdi
+
     // x0(originMethodReturn) = [self x0]
     movq	__hs_tmp_store+16(%rip), %rsi
     movq	__hs_tmp_store+8(%rip), %rdi
@@ -137,9 +149,9 @@ _hs_switch_block_func_stret:
     movq	%rax, __hs_tmp_store+88(%rip)
     movq	%rdx, __hs_tmp_store+96(%rip)
 
-    // [self hs_executeBlockForOriginSelector:originSelector]
+    // [self hs_executeBlockAfterMethod:originSelector]
     movq	__hs_tmp_store+80(%rip), %rdx
-    movq	L_OBJC_SELECTOR_REFERENCES_.4(%rip), %rsi
+    movq	L_OBJC_SELECTOR_REFERENCES_.6(%rip), %rsi
     movq	__hs_tmp_store+16(%rip), %rdi
 
     callq   _objc_msgSend
@@ -165,20 +177,29 @@ L_OBJC_SELECTOR_REFERENCES_.2:
 
     .section	__TEXT,__objc_methname,cstring_literals
 L_OBJC_METH_VAR_NAME_.3:
-	.asciz	"hs_executeBlockForOriginSelector:"
+	.asciz	"hs_executeBlockBeforeMethod:"
 
 	.section	__DATA,__objc_selrefs,literal_pointers,no_dead_strip
 	.align	3
 L_OBJC_SELECTOR_REFERENCES_.4:
 	.quad	L_OBJC_METH_VAR_NAME_.3
 
+    .section	__TEXT,__objc_methname,cstring_literals
+L_OBJC_METH_VAR_NAME_.5:
+	.asciz	"hs_executeBlockAfterMethod:"
+
+	.section	__DATA,__objc_selrefs,literal_pointers,no_dead_strip
+	.align	3
+L_OBJC_SELECTOR_REFERENCES_.6:
+	.quad	L_OBJC_METH_VAR_NAME_.5
+
 
 	.section	__DATA,__data
 	.globl	__hs_tmp_store                  
 	.align	4
 __hs_tmp_store:
-	.quad	1
-	.quad	2
+	.quad	1       // %rbp
+	.quad	2       // %rdi~%r9
     .quad	3
     .quad	4
     .quad	5
@@ -187,6 +208,22 @@ __hs_tmp_store:
     .quad	8
     .quad	9
     .quad	10
+    .quad	11      // replaceSelector
+    .quad	12      // (return) %rax
+    .quad	13      // (return) %rdx
+    .quad	14
+    .quad	15
+    .quad	16
+    .quad	1
+	.quad	2
+    .quad	3
+    .quad	4
+    .quad	5
+    .quad	6
+    .quad	7
+    .quad	8
+    .quad	9
+    .quad	10      // %xmm0~%xmm7
     .quad	11
     .quad	12
     .quad	13
@@ -202,7 +239,7 @@ __hs_tmp_store:
     .quad	7
     .quad	8
     .quad	9
-    .quad	10
+    .quad	10      // (return)%xmm0
     .quad	11
     .quad	12
     .quad	13
