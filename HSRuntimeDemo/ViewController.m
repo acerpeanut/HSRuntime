@@ -15,6 +15,19 @@
 
 @implementation ViewController
 
+typedef struct {
+    long y;
+    long y1;
+} node;
+
+node returnCGRect() {
+    node x = {30,40};
+    return x;
+}
+void doReturn() {
+    node x = returnCGRect();
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.

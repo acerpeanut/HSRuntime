@@ -93,6 +93,11 @@ _hs_switch_block_func:        ; @hs_switch_block_func
     adrp	x9, __hs_tmp_store@PAGE
 	add	x9, x9, __hs_tmp_store@PAGEOFF
     str		x0, [x9, #0x10]
+    str		d0, [x9, #0x20]
+    str		d1, [x9, #0x28]
+    str		d2, [x9, #0x30]
+    str		d3, [x9, #0x38]
+    str		x1, [x9, #0x40]
 
     // [self hs_executeBlockAfterMethod:originSelector]
 
@@ -108,6 +113,11 @@ _hs_switch_block_func:        ; @hs_switch_block_func
     adrp	x9, __hs_tmp_store@PAGE
 	add	x9, x9, __hs_tmp_store@PAGEOFF
     ldr		x0, [x9, #0x10]
+    ldr		d0, [x9, #0x20]
+    ldr		d1, [x9, #0x28]
+    ldr		d2, [x9, #0x30]
+    ldr		d3, [x9, #0x38]
+    ldr		x1, [x9, #0x40]
 	ldr		X30, [x9]
     ldr     x8, [x9, #8] // no need to restore x8, just ...
     
@@ -149,14 +159,14 @@ L_OBJC_SELECTOR_REFERENCES_.6:
 	.globl	__hs_tmp_store                  ; @kexue
 	.align	3
 __hs_tmp_store:
-	.quad	1                       ; 0x1 (return)
+	.quad	1                       ; 0x1 (return)x0
 	.quad	2                       ; 0x2 (x8)
     .quad	3                       ; 0x3 (replaceSelector)
-    .quad	4                       ; 0x3
-    .quad	5                       ; 0x3
-    .quad	6                       ; 0x3
-    .quad	7                       ; 0x3
-    .quad	8                       ; 0x3
+    .quad	4                       ; 0x3 (return)d0
+    .quad	5                       ; 0x3 (return)d1
+    .quad	6                       ; 0x3 (return)d2
+    .quad	7                       ; 0x3 (return)d3
+    .quad	8                       ; 0x3 (return)x1
     .quad	9                       ; 0x3
     .quad	10                       ; 0x3
     .quad	11                       ; 0x3
