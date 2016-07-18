@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		29869A851D3A1F9000D4B403 /* HSRuntime_Memory_stack.c in Sources */ = {isa = PBXBuildFile; fileRef = 29869A841D3A1F9000D4B403 /* HSRuntime_Memory_stack.c */; };
 		298A2C501D2A062800421B6D /* HSRuntime.h in Headers */ = {isa = PBXBuildFile; fileRef = 298A2C4F1D2A062800421B6D /* HSRuntime.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		298A2C611D2A06BE00421B6D /* HSAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 298A2C571D2A06BE00421B6D /* HSAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		298A2C621D2A06BE00421B6D /* HSAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 298A2C581D2A06BE00421B6D /* HSAttribute.m */; };
@@ -55,6 +56,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		29869A841D3A1F9000D4B403 /* HSRuntime_Memory_stack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = HSRuntime_Memory_stack.c; sourceTree = "<group>"; };
 		298A2C4C1D2A062800421B6D /* HSRuntime.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HSRuntime.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		298A2C4F1D2A062800421B6D /* HSRuntime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HSRuntime.h; sourceTree = "<group>"; };
 		298A2C511D2A062800421B6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 				298A2C601D2A06BE00421B6D /* HSRuntime_switch_x86_64.s */,
 				298A2C4F1D2A062800421B6D /* HSRuntime.h */,
 				298A2C511D2A062800421B6D /* Info.plist */,
+				29869A841D3A1F9000D4B403 /* HSRuntime_Memory_stack.c */,
 			);
 			path = HSRuntime;
 			sourceTree = "<group>";
@@ -286,6 +289,7 @@
 				298A2C641D2A06BE00421B6D /* HSIvar.m in Sources */,
 				298A2C661D2A06BE00421B6D /* HSMethod.m in Sources */,
 				298A2C691D2A06BE00421B6D /* HSRuntime_switch_arm64.s in Sources */,
+				29869A851D3A1F9000D4B403 /* HSRuntime_Memory_stack.c in Sources */,
 				298A2C621D2A06BE00421B6D /* HSAttribute.m in Sources */,
 				298A2C681D2A06BE00421B6D /* HSProperty.m in Sources */,
 			);

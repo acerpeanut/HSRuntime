@@ -8,12 +8,47 @@
 
 
 #if defined(__arm64__)
+
+// R19~R28   callee-saved registers (must restore when return)
+// R9~R15    temporary registers
+
+.macro PushStoreStackAddress
+	// load address of trampoline data (one page before this instruction)
+	adrp	x9, __hs_tmp_store@PAGE
+	add	x9, x9, __hs_tmp_store@PAGEOFF
+    ldr	x10, [x9]
+    add	x10, x10, #0x100
+    str	x10, [x9]
+    add	x9, x9, x10
+
+.endmacro
+
+.macro PopStoreStackAddress
+	// load address of trampoline data (one page before this instruction)
+	adrp	x9, __hs_tmp_store@PAGE
+	add	x9, x9, __hs_tmp_store@PAGEOFF
+    ldr	x10, [x9]
+    sub	x10, x10, #0x100
+    str	x10, [x9]
+    add	x9, x9, x10
+.endmacro
+
+.macro LoadStoreStackAddress
+	// load address of trampoline data (one page before this instruction)
+	adrp	x9, __hs_tmp_store@PAGE
+	add	x9, x9, __hs_tmp_store@PAGEOFF
+    ldr	x10, [x9]
+    add	x9, x9, x10
+.endmacro
+
+
 	.globl	_hs_switch_block_func
 	.align	2
 _hs_switch_block_func:        ; @hs_switch_block_func
 
-    adrp	x9, __hs_tmp_store@PAGE
-	add	x9, x9, __hs_tmp_store@PAGEOFF
+    PushStoreStackAddress
+//    adrp	x9, __hs_tmp_store@PAGE
+//	add	x9, x9, __hs_tmp_store@PAGEOFF
 
 // save x30 for return pointer
     mov	x10, X30
@@ -49,8 +84,9 @@ _hs_switch_block_func:        ; @hs_switch_block_func
     mov x1, x8
 
     bl _objc_msgSend
-    adrp	x9, __hs_tmp_store@PAGE
-	add	x9, x9, __hs_tmp_store@PAGEOFF
+    LoadStoreStackAddress
+//    adrp	x9, __hs_tmp_store@PAGE
+//	add	x9, x9, __hs_tmp_store@PAGEOFF
     str		x0, [x9, #0x18] // replaceSelector
 
     // [self hs_executeBlockBeforeMethod:originSelector]
@@ -63,8 +99,9 @@ _hs_switch_block_func:        ; @hs_switch_block_func
     bl _objc_msgSend
 
     // x0(originMethodReturn) = [self x0]
-    adrp	x9, __hs_tmp_store@PAGE
-	add	x9, x9, __hs_tmp_store@PAGEOFF
+    LoadStoreStackAddress
+//    adrp	x9, __hs_tmp_store@PAGE
+//	add	x9, x9, __hs_tmp_store@PAGEOFF
     ldr     x1, [x9, #0x18]
 
 // restore interger/pointer params
@@ -90,8 +127,9 @@ _hs_switch_block_func:        ; @hs_switch_block_func
 
     bl	_objc_msgSend
     // save x0(originMethodReturn)
-    adrp	x9, __hs_tmp_store@PAGE
-	add	x9, x9, __hs_tmp_store@PAGEOFF
+    LoadStoreStackAddress
+//    adrp	x9, __hs_tmp_store@PAGE
+//	add	x9, x9, __hs_tmp_store@PAGEOFF
     str		x0, [x9, #0x10]
     str		d0, [x9, #0x20]
     str		d1, [x9, #0x28]
@@ -110,8 +148,9 @@ _hs_switch_block_func:        ; @hs_switch_block_func
     bl _objc_msgSend
 
     // return originMethodReturn, and restore x30
-    adrp	x9, __hs_tmp_store@PAGE
-	add	x9, x9, __hs_tmp_store@PAGEOFF
+    LoadStoreStackAddress
+//    adrp	x9, __hs_tmp_store@PAGE
+//	add	x9, x9, __hs_tmp_store@PAGEOFF
     ldr		x0, [x9, #0x10]
     ldr		d0, [x9, #0x20]
     ldr		d1, [x9, #0x28]
@@ -120,6 +159,7 @@ _hs_switch_block_func:        ; @hs_switch_block_func
     ldr		x1, [x9, #0x40]
 	ldr		X30, [x9]
     ldr     x8, [x9, #8] // no need to restore x8, just ...
+    PopStoreStackAddress
     
     ret
 
@@ -154,11 +194,11 @@ L_OBJC_SELECTOR_REFERENCES_.6:
 
 
 
-
+// use a heap to override this
 	.section	__DATA,__data
 	.globl	__hs_tmp_store                  ; @kexue
 	.align	3
-__hs_tmp_store:
+___hs_tmp_store:
 	.quad	1                       ; 0x1 (return)x0
 	.quad	2                       ; 0x2 (x8)
     .quad	3                       ; 0x3 (replaceSelector)
