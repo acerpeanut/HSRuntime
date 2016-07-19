@@ -15,33 +15,25 @@
 
 @implementation ViewController
 
-typedef struct {
-    long y;
-    long y1;
-} node;
-
-node returnCGRect() {
-    node x = {30,40};
-    return x;
-}
-void doReturn() {
-    node x = returnCGRect();
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    [self hs_executeBlockOnMethodRun:@selector(viewWillAppear:) before:^{
-        NSLog(@"viewWillAppear: - before");
-    } after:^{
-        NSLog(@"viewWillAppear: - after");
-    }];
+    [self hs_callTrace];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self hello];
+    });
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    NSLog(@"run viewWillAppear");
+- (void)hello {
+    [self hi];
+}
+- (void)hi {
+    [self peter];
+}
+- (void)peter {
+    
 }
 
 

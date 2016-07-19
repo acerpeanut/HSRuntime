@@ -27,5 +27,7 @@
 
 - (void)hs_executeBlockOnMethodRun:(SEL)originSelector before:(void (^)())before after:(void (^)())after;
 
+- (void)hs_callTrace;
+
 
 @end

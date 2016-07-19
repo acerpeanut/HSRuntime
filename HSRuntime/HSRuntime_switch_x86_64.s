@@ -9,160 +9,205 @@
 
 #if defined(__x86_64__)
 
+// R12~R15   callee-saved registers (must restore when return)
+// %rax    temporary registers
+
+// use R13 for the stack address
+.macro PushStoreStackAddress
+
+	movq    __hs_tmp_store(%rip), %rax
+    addq    $$0x168, %rax
+    movq    %rax, __hs_tmp_store(%rip)
+    leaq    __hs_tmp_store(%rip), %rax
+    addq    __hs_tmp_store(%rip), %rax
+    movq    %r13, 0x160(%rax)
+    movq    %rax, %r13
+
+.endmacro
+
+.macro PopStoreStackAddress
+	movq    __hs_tmp_store(%rip), %r9
+    subq    $$0x168, %r9
+    movq    %r9, __hs_tmp_store(%rip)
+    movq    %r13, %r9
+    movq    0x160(%r9), %r13
+.endmacro
+
+.macro LoadStoreStackAddress
+
+.endmacro
 
 	.globl	_hs_switch_block_func
 	.align	4, 0x90
 _hs_switch_block_func:
-    movq    %rbp, __hs_tmp_store(%rip) // save %rbp even though never changed
-	movq	%rdi, __hs_tmp_store+8(%rip)
-	movq	%rsi, __hs_tmp_store+16(%rip)
-	movq	%rdx, __hs_tmp_store+24(%rip)
-	movq	%rcx, __hs_tmp_store+32(%rip)
-	movq	%r8, __hs_tmp_store+40(%rip)
-	movq	%r9, __hs_tmp_store+48(%rip)
+    PushStoreStackAddress
+//    movq    __hs_tmp_store(%rip), %rax
+//    addq    $0x168, %rax
+//    movq    %rax, __hs_tmp_store(%rip)
+//    leaq    __hs_tmp_store(%rip), %rax
+//    addq    __hs_tmp_store(%rip), %rax
+//    movq    %r13, 0x160(%rax)
+//    movq    %rax, %r13
+
+    movq    %rbp, ( %r13) // save %rbp even though never changed
+	movq	%rdi, 8( %r13)
+	movq	%rsi, 16( %r13)
+	movq	%rdx, 24( %r13)
+	movq	%rcx, 32( %r13)
+	movq	%r8, 40( %r13)
+	movq	%r9, 48( %r13)
 
     // save %xmm0~%xmm7 for floating-point arguments
-    movsd   %xmm0, __hs_tmp_store+200(%rip)
-    movsd   %xmm1, __hs_tmp_store+216(%rip)
-    movsd   %xmm2, __hs_tmp_store+232(%rip)
-    movsd   %xmm3, __hs_tmp_store+248(%rip)
-    movsd   %xmm4, __hs_tmp_store+264(%rip)
-    movsd   %xmm5, __hs_tmp_store+280(%rip)
-    movsd   %xmm6, __hs_tmp_store+296(%rip)
-    movsd   %xmm7, __hs_tmp_store+312(%rip)
+    movsd   %xmm0, 200( %r13)
+    movsd   %xmm1, 216( %r13)
+    movsd   %xmm2, 232( %r13)
+    movsd   %xmm3, 248( %r13)
+    movsd   %xmm4, 264( %r13)
+    movsd   %xmm5, 280( %r13)
+    movsd   %xmm6, 296( %r13)
+    movsd   %xmm7, 312( %r13)
 
 
     // pop return address pointer from stack and save
     popq	%rax
-    movq	%rax, __hs_tmp_store+72(%rip)
+    movq	%rax, 72( %r13)
 
     // x0(originSelector) = [self hs_selectorForOriginMethod:x1]
-    movq    __hs_tmp_store+8(%rip), %rdi
-    movq    __hs_tmp_store+16(%rip), %rdx
-    movq	L_OBJC_SELECTOR_REFERENCES_.2(%rip), %rsi
+    movq    8( %r13), %rdi
+    movq    16( %r13), %rdx
+    movq	L_OBJC_SELECTOR_REFERENCES_.2( %rip), %rsi
 
     callq	_objc_msgSend
-    movq	%rax, __hs_tmp_store+80(%rip)
+    movq	%rax, 80( %r13)
 
     // [self hs_executeBlockBeforeMethod:originSelector]
-    movq	__hs_tmp_store+80(%rip), %rdx
-    movq	L_OBJC_SELECTOR_REFERENCES_.4(%rip), %rsi
-    movq	__hs_tmp_store+8(%rip), %rdi
+    movq	80( %r13), %rdx
+    movq	L_OBJC_SELECTOR_REFERENCES_.4( %rip), %rsi
+    movq	8( %r13), %rdi
 
     callq   _objc_msgSend
 
     // x0(originMethodReturn) = [self x0]
-    movq	__hs_tmp_store+80(%rip), %rsi
-    movq	__hs_tmp_store+8(%rip), %rdi
-	movq	__hs_tmp_store+24(%rip), %rdx
-	movq	__hs_tmp_store+32(%rip), %rcx
-	movq	__hs_tmp_store+40(%rip), %r8
-	movq	__hs_tmp_store+48(%rip), %r9
+    movq	80( %r13), %rsi
+    movq	8( %r13), %rdi
+	movq	24( %r13), %rdx
+	movq	32( %r13), %rcx
+	movq	40( %r13), %r8
+	movq	48( %r13), %r9
     // restore %xmm0~%xmm7 for floating-point arguments
-    movsd   __hs_tmp_store+200(%rip), %xmm0
-    movsd   __hs_tmp_store+216(%rip), %xmm1
-    movsd   __hs_tmp_store+232(%rip), %xmm2
-    movsd   __hs_tmp_store+248(%rip), %xmm3
-    movsd   __hs_tmp_store+264(%rip), %xmm4
-    movsd   __hs_tmp_store+280(%rip), %xmm5
-    movsd   __hs_tmp_store+296(%rip), %xmm6
-    movsd   __hs_tmp_store+312(%rip), %xmm7
+    movsd   200( %r13), %xmm0
+    movsd   216( %r13), %xmm1
+    movsd   232( %r13), %xmm2
+    movsd   248( %r13), %xmm3
+    movsd   264( %r13), %xmm4
+    movsd   280( %r13), %xmm5
+    movsd   296( %r13), %xmm6
+    movsd   312( %r13), %xmm7
 
     callq   _objc_msgSend
-    movq	%rax, __hs_tmp_store+88(%rip)
-    movsd   %xmm0, __hs_tmp_store+328(%rip)
+    movq	%rax, 88( %r13)
+    movsd   %xmm0, 328( %r13)
 
     // [self hs_executeBlockAfterMethod:originSelector]
-    movq	__hs_tmp_store+80(%rip), %rdx
-    movq	L_OBJC_SELECTOR_REFERENCES_.6(%rip), %rsi
-    movq	__hs_tmp_store+8(%rip), %rdi
+    movq	80( %r13), %rdx
+    movq	L_OBJC_SELECTOR_REFERENCES_.6( %rip), %rsi
+    movq	8( %r13), %rdi
 
     callq   _objc_msgSend
 
     // restore (originMethodReturn) to return
-    movq	__hs_tmp_store+88(%rip), %rax
-    movsd   __hs_tmp_store+328(%rip), %xmm0
+    movq	88( %r13), %rax
+    movsd   328( %r13), %xmm0
     // restore return address pointer and push to stack
-    movq	__hs_tmp_store+72(%rip), %rdi
+    movq	72( %r13), %rdi
     pushq	%rdi
 
+    PopStoreStackAddress
+//    movq    __hs_tmp_store(%rip), %r9
+//    subq    $0x168, %r9
+//    movq    %r9, __hs_tmp_store(%rip)
+//    movq    %r13, %r9
+//    movq    0x160(%r9), %r13
     retq
 
 
     .globl	_hs_switch_block_func_stret
 	.align	4, 0x90
 _hs_switch_block_func_stret:
-    movq    %rbp, __hs_tmp_store(%rip) // save %rbp even though never changed
-	movq	%rdi, __hs_tmp_store+8(%rip)
-	movq	%rsi, __hs_tmp_store+16(%rip)
-	movq	%rdx, __hs_tmp_store+24(%rip)
-	movq	%rcx, __hs_tmp_store+32(%rip)
-	movq	%r8, __hs_tmp_store+40(%rip)
-	movq	%r9, __hs_tmp_store+48(%rip)
+    PushStoreStackAddress
+
+    movq    %rbp, (%r13) // save %rbp even though never changed
+	movq	%rdi, 8(%r13)
+	movq	%rsi, 16(%r13)
+	movq	%rdx, 24(%r13)
+	movq	%rcx, 32(%r13)
+	movq	%r8, 40(%r13)
+	movq	%r9, 48(%r13)
 
     // save %xmm0~%xmm7 for floating-point arguments
-    movsd   %xmm0, __hs_tmp_store+200(%rip)
-    movsd   %xmm1, __hs_tmp_store+216(%rip)
-    movsd   %xmm2, __hs_tmp_store+232(%rip)
-    movsd   %xmm3, __hs_tmp_store+248(%rip)
-    movsd   %xmm4, __hs_tmp_store+264(%rip)
-    movsd   %xmm5, __hs_tmp_store+280(%rip)
-    movsd   %xmm6, __hs_tmp_store+296(%rip)
-    movsd   %xmm7, __hs_tmp_store+312(%rip)
+    movsd   %xmm0, 200(%r13)
+    movsd   %xmm1, 216(%r13)
+    movsd   %xmm2, 232(%r13)
+    movsd   %xmm3, 248(%r13)
+    movsd   %xmm4, 264(%r13)
+    movsd   %xmm5, 280(%r13)
+    movsd   %xmm6, 296(%r13)
+    movsd   %xmm7, 312(%r13)
 
     // pop return address pointer from stack and save
     popq	%rax
-    movq	%rax, __hs_tmp_store+72(%rip)
+    movq	%rax, 72(%r13)
 
     // x0(originSelector) = [self hs_selectorForOriginMethod:x1]
-    movq    __hs_tmp_store+16(%rip), %rdi
-    movq    __hs_tmp_store+24(%rip), %rdx
+    movq    16(%r13), %rdi
+    movq    24(%r13), %rdx
     movq	L_OBJC_SELECTOR_REFERENCES_.2(%rip), %rsi
 
     callq	_objc_msgSend
-    movq	%rax, __hs_tmp_store+80(%rip)
+    movq	%rax, 80(%r13)
 
     // [self hs_executeBlockBeforeMethod:originSelector]
-    movq	__hs_tmp_store+80(%rip), %rdx
+    movq	80(%r13), %rdx
     movq	L_OBJC_SELECTOR_REFERENCES_.4(%rip), %rsi
-    movq	__hs_tmp_store+16(%rip), %rdi
+    movq	16(%r13), %rdi
 
     // x0(originMethodReturn) = [self x0]
-    movq	__hs_tmp_store+16(%rip), %rsi
-    movq	__hs_tmp_store+8(%rip), %rdi
-	movq	__hs_tmp_store+80(%rip), %rdx
-	movq	__hs_tmp_store+32(%rip), %rcx
-	movq	__hs_tmp_store+40(%rip), %r8
-	movq	__hs_tmp_store+48(%rip), %r9
+    movq	16(%r13), %rsi
+    movq	8(%r13), %rdi
+	movq	80(%r13), %rdx
+	movq	32(%r13), %rcx
+	movq	40(%r13), %r8
+	movq	48(%r13), %r9
     // restore %xmm0~%xmm7 for floating-point arguments
-    movsd   __hs_tmp_store+200(%rip), %xmm0
-    movsd   __hs_tmp_store+216(%rip), %xmm1
-    movsd   __hs_tmp_store+232(%rip), %xmm2
-    movsd   __hs_tmp_store+248(%rip), %xmm3
-    movsd   __hs_tmp_store+264(%rip), %xmm4
-    movsd   __hs_tmp_store+280(%rip), %xmm5
-    movsd   __hs_tmp_store+296(%rip), %xmm6
-    movsd   __hs_tmp_store+312(%rip), %xmm7
+    movsd   200(%r13), %xmm0
+    movsd   216(%r13), %xmm1
+    movsd   232(%r13), %xmm2
+    movsd   248(%r13), %xmm3
+    movsd   264(%r13), %xmm4
+    movsd   280(%r13), %xmm5
+    movsd   296(%r13), %xmm6
+    movsd   312(%r13), %xmm7
 
     callq   _objc_msgSend_stret
     // if struct size less than 16, %rax and %rdx store the return
-    movq	%rax, __hs_tmp_store+88(%rip)
-    movq	%rdx, __hs_tmp_store+96(%rip)
+    movq	%rax, 88(%r13)
+    movq	%rdx, 96(%r13)
 
     // [self hs_executeBlockAfterMethod:originSelector]
-    movq	__hs_tmp_store+80(%rip), %rdx
+    movq	80(%r13), %rdx
     movq	L_OBJC_SELECTOR_REFERENCES_.6(%rip), %rsi
-    movq	__hs_tmp_store+16(%rip), %rdi
+    movq	16(%r13), %rdi
 
     callq   _objc_msgSend
 
     // restore (originMethodReturn) to return
-    movq	__hs_tmp_store+88(%rip), %rax
-    movq	__hs_tmp_store+96(%rip), %rdx
+    movq	88(%r13), %rax
+    movq	96(%r13), %rdx
     // restore return address pointer and push to stack
-    movq	__hs_tmp_store+72(%rip), %rdi
+    movq	72(%r13), %rdi
     pushq	%rdi
 
+    PopStoreStackAddress
     retq
 
 
@@ -197,7 +242,7 @@ L_OBJC_SELECTOR_REFERENCES_.6:
 	.section	__DATA,__data
 	.globl	__hs_tmp_store                  
 	.align	4
-__hs_tmp_store:
+___hs_tmp_store:
 	.quad	1       // %rbp
 	.quad	2       // %rdi~%r9
     .quad	3

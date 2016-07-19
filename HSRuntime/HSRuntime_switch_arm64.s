@@ -12,33 +12,35 @@
 // R19~R28   callee-saved registers (must restore when return)
 // R9~R15    temporary registers
 
+// use R19 for the stack address
 .macro PushStoreStackAddress
 	// load address of trampoline data (one page before this instruction)
 	adrp	x9, __hs_tmp_store@PAGE
 	add	x9, x9, __hs_tmp_store@PAGEOFF
     ldr	x10, [x9]
-    add	x10, x10, #0x100
+    add	x10, x10, #0x110
     str	x10, [x9]
     add	x9, x9, x10
+    // store x19 on stack.0x108
+    str x19, [x9, #0x108]
+    mov x19, x9
 
 .endmacro
 
 .macro PopStoreStackAddress
 	// load address of trampoline data (one page before this instruction)
+    ldr x19, [x19, #0x108]
 	adrp	x9, __hs_tmp_store@PAGE
 	add	x9, x9, __hs_tmp_store@PAGEOFF
     ldr	x10, [x9]
-    sub	x10, x10, #0x100
+    sub	x10, x10, #0x110
     str	x10, [x9]
     add	x9, x9, x10
 .endmacro
 
 .macro LoadStoreStackAddress
 	// load address of trampoline data (one page before this instruction)
-	adrp	x9, __hs_tmp_store@PAGE
-	add	x9, x9, __hs_tmp_store@PAGEOFF
-    ldr	x10, [x9]
-    add	x9, x9, x10
+	mov x9, x19
 .endmacro
 
 

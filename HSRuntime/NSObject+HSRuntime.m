@@ -17,7 +17,20 @@ extern void hs_switch_block_func_stret();
 
 @implementation NSObject (HSRuntime)
 
+- (void)test {
+    NSLog(@"jsii");
+}
 
+- (void)hs_callTrace {
+    for (HSMethod *method in self.hs_allMethods) {
+        SEL selector = sel_registerName(method.name.UTF8String);
+        [self hs_executeBlockOnMethodRun:selector before:^{
+            NSLog(@"[%@(%@)\tbefore]", method.name, [self class]);
+        } after:^{
+            NSLog(@"[%@(%@)\tafter]", method.name, [self class]);
+        }];
+    }
+}
 
 - (SEL)hs_selectorForOriginMethod:(SEL)selector {
     NSString *selectorString = NSStringFromSelector(selector);
@@ -99,7 +112,7 @@ static char executeBlocksKey;
     method_setImplementation(originMethod, replaceImplement);
     
 #else
-#warning "Not support i386 or armv7 yet"
+    NSLog("Not support i386 or armv7 yet");
 #endif
 }
 

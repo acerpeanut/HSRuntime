@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		296D6E901D3C7A57007198BD /* HSRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 298A2C4C1D2A062800421B6D /* HSRuntime.framework */; };
+		296D6E911D3C7A57007198BD /* HSRuntime.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 298A2C4C1D2A062800421B6D /* HSRuntime.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		29869A851D3A1F9000D4B403 /* HSRuntime_Memory_stack.c in Sources */ = {isa = PBXBuildFile; fileRef = 29869A841D3A1F9000D4B403 /* HSRuntime_Memory_stack.c */; };
 		298A2C501D2A062800421B6D /* HSRuntime.h in Headers */ = {isa = PBXBuildFile; fileRef = 298A2C4F1D2A062800421B6D /* HSRuntime.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		298A2C611D2A06BE00421B6D /* HSAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 298A2C571D2A06BE00421B6D /* HSAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -27,12 +29,10 @@
 		298A2C821D2A076900421B6D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 298A2C801D2A076900421B6D /* Main.storyboard */; };
 		298A2C841D2A076900421B6D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 298A2C831D2A076900421B6D /* Assets.xcassets */; };
 		298A2C871D2A076900421B6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 298A2C851D2A076900421B6D /* LaunchScreen.storyboard */; };
-		298A2C8C1D2A078400421B6D /* HSRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 298A2C4C1D2A062800421B6D /* HSRuntime.framework */; };
-		298A2C8E1D2A0B8100421B6D /* HSRuntime.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 298A2C4C1D2A062800421B6D /* HSRuntime.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		298A2C8F1D2A0B8100421B6D /* PBXContainerItemProxy */ = {
+		296D6E8E1D3C7927007198BD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 298A2C431D2A062700421B6D /* Project object */;
 			proxyType = 1;
@@ -42,13 +42,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		298A2C911D2A0B8100421B6D /* Embed Frameworks */ = {
+		296D6E921D3C7A57007198BD /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				298A2C8E1D2A0B8100421B6D /* HSRuntime.framework in Embed Frameworks */,
+				296D6E911D3C7A57007198BD /* HSRuntime.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -96,7 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				298A2C8C1D2A078400421B6D /* HSRuntime.framework in Frameworks */,
+				296D6E901D3C7A57007198BD /* HSRuntime.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,12 +211,12 @@
 				298A2C711D2A076900421B6D /* Sources */,
 				298A2C721D2A076900421B6D /* Frameworks */,
 				298A2C731D2A076900421B6D /* Resources */,
-				298A2C911D2A0B8100421B6D /* Embed Frameworks */,
+				296D6E921D3C7A57007198BD /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				298A2C901D2A0B8100421B6D /* PBXTargetDependency */,
+				296D6E8F1D3C7927007198BD /* PBXTargetDependency */,
 			);
 			name = HSRuntimeDemo;
 			productName = HSRuntimeDemo;
@@ -308,10 +308,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		298A2C901D2A0B8100421B6D /* PBXTargetDependency */ = {
+		296D6E8F1D3C7927007198BD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 298A2C4B1D2A062800421B6D /* HSRuntime */;
-			targetProxy = 298A2C8F1D2A0B8100421B6D /* PBXContainerItemProxy */;
+			targetProxy = 296D6E8E1D3C7927007198BD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -373,7 +373,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -415,7 +415,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -435,7 +435,8 @@
 				INFOPLIST_FILE = HSRuntime/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MACH_O_TYPE = staticlib;
+				MACH_O_TYPE = mh_dylib;
+				OTHER_CFLAGS = "-objc";
 				PRODUCT_BUNDLE_IDENTIFIER = com.HSRuntime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -452,7 +453,8 @@
 				INFOPLIST_FILE = HSRuntime/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MACH_O_TYPE = staticlib;
+				MACH_O_TYPE = mh_dylib;
+				OTHER_CFLAGS = "-objc";
 				PRODUCT_BUNDLE_IDENTIFIER = com.HSRuntime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
