@@ -112,7 +112,7 @@ static char executeBlocksKey;
     method_setImplementation(originMethod, replaceImplement);
     
 #else
-    NSLog("Not support i386 or armv7 yet");
+    NSLog(@"Not support i386 or armv7 yet");
 #endif
 }
 

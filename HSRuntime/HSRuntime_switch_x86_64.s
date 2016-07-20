@@ -40,14 +40,8 @@
 	.globl	_hs_switch_block_func
 	.align	4, 0x90
 _hs_switch_block_func:
+    .cfi_startproc
     PushStoreStackAddress
-//    movq    __hs_tmp_store(%rip), %rax
-//    addq    $0x168, %rax
-//    movq    %rax, __hs_tmp_store(%rip)
-//    leaq    __hs_tmp_store(%rip), %rax
-//    addq    __hs_tmp_store(%rip), %rax
-//    movq    %r13, 0x160(%rax)
-//    movq    %rax, %r13
 
     movq    %rbp, ( %r13) // save %rbp even though never changed
 	movq	%rdi, 8( %r13)
@@ -123,17 +117,14 @@ _hs_switch_block_func:
     pushq	%rdi
 
     PopStoreStackAddress
-//    movq    __hs_tmp_store(%rip), %r9
-//    subq    $0x168, %r9
-//    movq    %r9, __hs_tmp_store(%rip)
-//    movq    %r13, %r9
-//    movq    0x160(%r9), %r13
     retq
+    .cfi_endproc
 
 
     .globl	_hs_switch_block_func_stret
 	.align	4, 0x90
 _hs_switch_block_func_stret:
+    .cfi_startproc
     PushStoreStackAddress
 
     movq    %rbp, (%r13) // save %rbp even though never changed
@@ -209,6 +200,7 @@ _hs_switch_block_func_stret:
 
     PopStoreStackAddress
     retq
+    .cfi_endproc
 
 
     .section	__TEXT,__objc_methname,cstring_literals

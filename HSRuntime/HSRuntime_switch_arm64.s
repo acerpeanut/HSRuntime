@@ -47,10 +47,9 @@
 	.globl	_hs_switch_block_func
 	.align	2
 _hs_switch_block_func:        ; @hs_switch_block_func
+.cfi_startproc
 
     PushStoreStackAddress
-//    adrp	x9, __hs_tmp_store@PAGE
-//	add	x9, x9, __hs_tmp_store@PAGEOFF
 
 // save x30 for return pointer
     mov	x10, X30
@@ -87,8 +86,7 @@ _hs_switch_block_func:        ; @hs_switch_block_func
 
     bl _objc_msgSend
     LoadStoreStackAddress
-//    adrp	x9, __hs_tmp_store@PAGE
-//	add	x9, x9, __hs_tmp_store@PAGEOFF
+
     str		x0, [x9, #0x18] // replaceSelector
 
     // [self hs_executeBlockBeforeMethod:originSelector]
@@ -102,8 +100,7 @@ _hs_switch_block_func:        ; @hs_switch_block_func
 
     // x0(originMethodReturn) = [self x0]
     LoadStoreStackAddress
-//    adrp	x9, __hs_tmp_store@PAGE
-//	add	x9, x9, __hs_tmp_store@PAGEOFF
+
     ldr     x1, [x9, #0x18]
 
 // restore interger/pointer params
@@ -130,8 +127,7 @@ _hs_switch_block_func:        ; @hs_switch_block_func
     bl	_objc_msgSend
     // save x0(originMethodReturn)
     LoadStoreStackAddress
-//    adrp	x9, __hs_tmp_store@PAGE
-//	add	x9, x9, __hs_tmp_store@PAGEOFF
+
     str		x0, [x9, #0x10]
     str		d0, [x9, #0x20]
     str		d1, [x9, #0x28]
@@ -151,8 +147,7 @@ _hs_switch_block_func:        ; @hs_switch_block_func
 
     // return originMethodReturn, and restore x30
     LoadStoreStackAddress
-//    adrp	x9, __hs_tmp_store@PAGE
-//	add	x9, x9, __hs_tmp_store@PAGEOFF
+
     ldr		x0, [x9, #0x10]
     ldr		d0, [x9, #0x20]
     ldr		d1, [x9, #0x28]
@@ -164,6 +159,7 @@ _hs_switch_block_func:        ; @hs_switch_block_func
     PopStoreStackAddress
     
     ret
+.cfi_endproc
 
 
 
