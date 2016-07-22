@@ -24,6 +24,52 @@
     return myIvar;
 }
 
+- (NSString *)valuePair:(id)object {
+    NSString *type = self.type;
+    if ([type rangeOfString:@"@"].location == 0) {
+        return [NSString stringWithFormat:@"%@\t:\t%@", self.name, [self valueOfObject:object]];
+    }
+    void *obj = ( __bridge void *)object;
+    char *bytes = (char *)obj;
+    
+    char character = [type characterAtIndex:0];
+    
+    if (character == '{') {
+        if ([type rangeOfString:@"CGPoint"].location != NSNotFound) {
+            return [NSString stringWithFormat:@"%@\t:\t%@", self.name, NSStringFromCGPoint(*((CGPoint *)(bytes+self.offset)))];
+        }
+        if ([type rangeOfString:@"CGRect"].location != NSNotFound) {
+            return [NSString stringWithFormat:@"%@\t:\t%@", self.name, NSStringFromCGRect(*((CGRect *)(bytes+self.offset)))];
+        }
+        if ([type rangeOfString:@"CGSize"].location != NSNotFound) {
+            return [NSString stringWithFormat:@"%@\t:\t%@", self.name, NSStringFromCGSize(*((CGSize *)(bytes+self.offset)))];
+        }
+        return [NSString stringWithFormat:@"%@\t:\t%@", self.name, [self type]];
+    }
+    if (character == 'd') {
+        return [NSString stringWithFormat:@"%@\t:\t%f", self.name, (double)(bytes[self.offset])];
+    }
+    if (character == 'Q') {
+        return [NSString stringWithFormat:@"%@\t:\t%ld", self.name, (long)(bytes[self.offset])];
+    }
+    if (character == 'i') {
+        return [NSString stringWithFormat:@"%@\t:\t%d", self.name, (int)(bytes[self.offset])];
+    }
+    if (character == 'b') {
+        int location = type.length>=2?[type characterAtIndex:1]-'1':0;
+        return [NSString stringWithFormat:@"%@\t:\t%d", self.name, (char)(bytes[self.offset+location])];
+    }
+    return [NSString stringWithFormat:@"%@\t:\t%@\t%ld", self.name, [self type], (long)self.offset];
+}
+
+- (id)valueOfObject:(NSObject *)object {
+    Ivar ivar = class_getInstanceVariable([object class], self.name.UTF8String);
+    if (ivar) {
+        return object_getIvar(object, ivar);
+    }
+    return nil;
+}
+
 - (NSString *)description {
     NSMutableString *description = [NSMutableString string];
     [description appendFormat:@"name: %@, type:%@, offset: %ld", self.name, self.type, (long)self.offset];

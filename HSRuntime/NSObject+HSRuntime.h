@@ -14,8 +14,6 @@
 
 @interface NSObject (HSRuntime)
 
-- (id)hs_ivarValue:(NSString *)ivarName;
-
 + (void)hs_swizzleMethod:(SEL)originSelector withMethod:(SEL)replaceSelector;
 
 + (NSArray <HSMethod *>*)hs_allMethods;
@@ -25,9 +23,17 @@
 + (NSArray <HSProperty *>*)hs_allProperties;
 - (NSArray <HSProperty *>*)hs_allProperties;
 
-- (void)hs_executeBlockOnMethodRun:(SEL)originSelector before:(void (^)())before after:(void (^)())after;
+- (void)hs_executeBlockOnMethodRun:(SEL)originSelector
+                            before:(void (^)())before
+                             after:(void (^)())after;
++ (void)hs_executeBlockOnMethodRun:(SEL)originSelector
+                            before:(void (^)())before
+                             after:(void (^)())after;
 
 - (void)hs_callTrace;
++ (void)hs_callTrace;
+
+- (NSString *)hs_prettyValues;
 
 
 @end

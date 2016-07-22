@@ -21,6 +21,26 @@ extern void hs_switch_block_func_stret();
     NSLog(@"jsii");
 }
 
++ (void)hs_callTrace {
+    for (HSMethod *method in self.hs_allMethods) {
+        SEL selector = sel_registerName(method.name.UTF8String);
+        [self hs_executeBlockOnMethodRun:selector before:^{
+            NSLog(@"[%@(%@)\tbefore]", method.name, [self class]);
+        } after:^{
+            NSLog(@"[%@(%@)\tafter]", method.name, [self class]);
+        }];
+    }
+}
+
++ (instancetype)shared {
+    static NSObject *shared;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        shared = [[self alloc] init];
+    });
+    return shared;
+}
+
 - (void)hs_callTrace {
     for (HSMethod *method in self.hs_allMethods) {
         SEL selector = sel_registerName(method.name.UTF8String);
@@ -48,6 +68,12 @@ extern void hs_switch_block_func_stret();
     if (executeBlock) {
         executeBlock();
     }
+    
+    // 执行全局block
+    if (self != [[self class] shared]) {
+        [[[self class] shared] hs_executeBlockBeforeMethod:selector];
+    }
+    
 }
 
 - (void)hs_executeBlockAfterMethod:(SEL)selector {
@@ -57,6 +83,11 @@ extern void hs_switch_block_func_stret();
     void (^executeBlock)() = executeBlocks[afterKey];
     if (executeBlock) {
         executeBlock();
+    }
+    
+    // 执行全局block
+    if (self != [[self class] shared]) {
+        [[[self class] shared] hs_executeBlockAfterMethod:selector];
     }
 }
 
@@ -70,6 +101,12 @@ static char executeBlocksKey;
         objc_setAssociatedObject(self, &executeBlocksKey, blocks, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     return blocks;
+}
+
++ (void)hs_executeBlockOnMethodRun:(SEL)originSelector
+                            before:(void (^)())before
+                             after:(void (^)())after {
+    [[self shared] hs_executeBlockOnMethodRun:originSelector before:before after:after];
 }
 
 - (void)hs_executeBlockOnMethodRun:(SEL)originSelector
@@ -100,7 +137,7 @@ static char executeBlocksKey;
     // 替换成后来的方法 "hs_switch_block_func(_stret)"
     IMP replaceImplement = (IMP)hs_switch_block_func;
 #if defined(__x86_64__)
-    // if a struct with size bigger than 16 will return, set to ...stret
+    // if a struct with size bigger than 16 will return, set imp to ...stret
     HSMethod *hsmethod = [HSMethod methodWithMethod:originMethod];
     NSMethodSignature *signature = [NSMethodSignature signatureWithObjCTypes:hsmethod.typeEncoding.UTF8String];
     if ([hsmethod.returnType characterAtIndex:0] == '{' &&
@@ -142,15 +179,6 @@ static char executeBlocksKey;
         method_exchangeImplementations(originMethod, replaceMethod);
     }
 
-}
-
-- (id)hs_ivarValue:(NSString *)ivarName {
-    Ivar ivar = class_getInstanceVariable([self class], ivarName.UTF8String);
-    if (ivar) {
-        return object_getIvar(self, ivar);
-    }
-    return nil;
-  
 }
 
 - (NSArray <HSMethod *>*)hs_allMethods {
@@ -215,6 +243,21 @@ static char executeBlocksKey;
 
 - (NSArray<HSProperty *> *)hs_allProperties {
     return [[self class] hs_allProperties];
+}
+
+- (NSString *)hs_prettyValues {
+    NSMutableString *string = [NSMutableString string];
+    NSArray <HSIvar *>*ivars = [self hs_allIvars];
+    for (HSIvar *ivar in ivars) {
+        [string appendFormat:@"\n%@", [ivar valuePair:self]];
+    }
+    [string appendString:@"\n----base---"];
+    ivars = [self.superclass hs_allIvars];
+    for (HSIvar *ivar in ivars) {
+        [string appendFormat:@"\n%@", [ivar valuePair:self]];
+    }
+
+    return [string copy];
 }
 
 @end

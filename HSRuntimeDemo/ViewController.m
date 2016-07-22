@@ -9,7 +9,10 @@
 #import "ViewController.h"
 #import <HSRuntime/HSRuntime.h>
 
-@interface ViewController ()
+@interface ViewController () {
+    int half;
+    NSString *string;
+}
 
 @end
 
@@ -19,7 +22,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    [self hs_callTrace];
+    [[self class] hs_callTrace];
+    string = @"hello";
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self hello];
@@ -33,7 +37,7 @@
     [self peter];
 }
 - (void)peter {
-    
+    NSLog(@"%@", [self hs_prettyValues]);
 }
 
 
