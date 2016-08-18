@@ -207,11 +207,12 @@ static char executeBlocksKey;
     Ivar *ivarList = class_copyIvarList([self class], &ivarCount);
     
     for (int i=0; i<ivarCount; i++) {
-        
         HSIvar *ivar = [HSIvar ivarWithIvar:ivarList[i]];
         [ivars addObject:ivar];
-        
     }
+    
+    // 取得BOOL，Byte的类型的byteOffset
+    [HSIvar fixByteOffsetWithIvars:ivars];
     
     free(ivarList);
     
@@ -245,19 +246,37 @@ static char executeBlocksKey;
     return [[self class] hs_allProperties];
 }
 
-- (NSString *)hs_prettyValues {
+- (NSString *)hs_prettyValuesWithClass:(Class)class  {
     NSMutableString *string = [NSMutableString string];
-    NSArray <HSIvar *>*ivars = [self hs_allIvars];
+    NSArray <HSIvar *>*ivars = [class hs_allIvars];
     for (HSIvar *ivar in ivars) {
         [string appendFormat:@"\n%@", [ivar valuePair:self]];
     }
-    [string appendString:@"\n----base---"];
-    ivars = [self.superclass hs_allIvars];
-    for (HSIvar *ivar in ivars) {
-        [string appendFormat:@"\n%@", [ivar valuePair:self]];
-    }
-
     return [string copy];
+}
+
+- (NSString *)hs_prettyValuesWithDepth:(NSInteger)depth  {
+    NSMutableString *string = [NSMutableString string];
+    
+    Class previorClass = nil;
+    Class class = [self class];
+    NSInteger currentLevel = 0;
+    while (class != nil && currentLevel < depth) {
+        if (currentLevel != 0) {
+            [string appendFormat:@"\n----%@---", class];
+        }
+        [string appendString:[self hs_prettyValuesWithClass:class]];
+        
+        currentLevel++;
+        previorClass = class;
+        class = [class superclass];
+    }
+    return [string copy];
+}
+
+- (NSString *)hs_prettyValues {
+
+    return [self hs_prettyValuesWithDepth:5];
 }
 
 @end

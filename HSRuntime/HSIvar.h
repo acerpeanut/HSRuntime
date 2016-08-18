@@ -21,4 +21,10 @@
 - (id)valueOfObject:(NSObject *)object;
 - (NSString *)valuePair:(id)object;
 
+/** ivar的offset未必是真实的偏移量，当类型为b1时，它
+ *  自身的偏移量还需再加上byteOffset
+ */
+@property (nonatomic, assign) NSInteger byteOffset;
+
++ (void)fixByteOffsetWithIvars:(NSArray <HSIvar *>*)ivars;
 @end

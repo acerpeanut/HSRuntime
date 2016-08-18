@@ -34,6 +34,8 @@
 + (void)hs_callTrace;
 
 - (NSString *)hs_prettyValues;
+- (NSString *)hs_prettyValuesWithDepth:(NSInteger)depth;
+- (NSString *)hs_prettyValuesWithClass:(Class)class;
 
 
 @end

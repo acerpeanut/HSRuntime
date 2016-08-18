@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2964488B1D658CBA00082051 /* TestObj1.m in Sources */ = {isa = PBXBuildFile; fileRef = 2964488A1D658CBA00082051 /* TestObj1.m */; };
 		296D6E901D3C7A57007198BD /* HSRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 298A2C4C1D2A062800421B6D /* HSRuntime.framework */; };
 		296D6E911D3C7A57007198BD /* HSRuntime.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 298A2C4C1D2A062800421B6D /* HSRuntime.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		29869A851D3A1F9000D4B403 /* HSRuntime_Memory_stack.c in Sources */ = {isa = PBXBuildFile; fileRef = 29869A841D3A1F9000D4B403 /* HSRuntime_Memory_stack.c */; };
@@ -29,6 +30,7 @@
 		298A2C821D2A076900421B6D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 298A2C801D2A076900421B6D /* Main.storyboard */; };
 		298A2C841D2A076900421B6D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 298A2C831D2A076900421B6D /* Assets.xcassets */; };
 		298A2C871D2A076900421B6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 298A2C851D2A076900421B6D /* LaunchScreen.storyboard */; };
+		299E8A281D4B040F00E60AB2 /* UITextView+HSPlaceHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 299E8A271D4B040F00E60AB2 /* UITextView+HSPlaceHolder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		296448891D658CBA00082051 /* TestObj1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestObj1.h; sourceTree = "<group>"; };
+		2964488A1D658CBA00082051 /* TestObj1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestObj1.m; sourceTree = "<group>"; };
 		29869A841D3A1F9000D4B403 /* HSRuntime_Memory_stack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = HSRuntime_Memory_stack.c; sourceTree = "<group>"; };
 		298A2C4C1D2A062800421B6D /* HSRuntime.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HSRuntime.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		298A2C4F1D2A062800421B6D /* HSRuntime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HSRuntime.h; sourceTree = "<group>"; };
@@ -82,6 +86,8 @@
 		298A2C831D2A076900421B6D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		298A2C861D2A076900421B6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		298A2C881D2A076900421B6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		299E8A261D4B040F00E60AB2 /* UITextView+HSPlaceHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextView+HSPlaceHolder.h"; sourceTree = "<group>"; };
+		299E8A271D4B040F00E60AB2 /* UITextView+HSPlaceHolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+HSPlaceHolder.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +152,8 @@
 		298A2C761D2A076900421B6D /* HSRuntimeDemo */ = {
 			isa = PBXGroup;
 			children = (
+				299E8A261D4B040F00E60AB2 /* UITextView+HSPlaceHolder.h */,
+				299E8A271D4B040F00E60AB2 /* UITextView+HSPlaceHolder.m */,
 				298A2C7A1D2A076900421B6D /* AppDelegate.h */,
 				298A2C7B1D2A076900421B6D /* AppDelegate.m */,
 				298A2C7D1D2A076900421B6D /* ViewController.h */,
@@ -155,6 +163,8 @@
 				298A2C851D2A076900421B6D /* LaunchScreen.storyboard */,
 				298A2C881D2A076900421B6D /* Info.plist */,
 				298A2C771D2A076900421B6D /* Supporting Files */,
+				296448891D658CBA00082051 /* TestObj1.h */,
+				2964488A1D658CBA00082051 /* TestObj1.m */,
 			);
 			path = HSRuntimeDemo;
 			sourceTree = "<group>";
@@ -299,7 +309,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				299E8A281D4B040F00E60AB2 /* UITextView+HSPlaceHolder.m in Sources */,
 				298A2C7F1D2A076900421B6D /* ViewController.m in Sources */,
+				2964488B1D658CBA00082051 /* TestObj1.m in Sources */,
 				298A2C7C1D2A076900421B6D /* AppDelegate.m in Sources */,
 				298A2C791D2A076900421B6D /* main.m in Sources */,
 			);
@@ -428,6 +440,7 @@
 		298A2C551D2A062800421B6D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -446,6 +459,7 @@
 		298A2C561D2A062800421B6D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -465,6 +479,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = HSRuntimeDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.HSRuntimeDemo;
@@ -476,6 +491,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = HSRuntimeDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.HSRuntimeDemo;
