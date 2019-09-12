@@ -37,5 +37,6 @@
 - (NSString *)hs_prettyValuesWithDepth:(NSInteger)depth;
 - (NSString *)hs_prettyValuesWithClass:(Class)class;
 
++ (void)captureImageAddress;
 
 @end
