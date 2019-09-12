@@ -8,6 +8,8 @@
 
 #import "NSObject+HSRuntime.h"
 #import <objc/message.h>
+#import <mach-o/dyld.h>
+#import <dlfcn.h>
 
 #if defined(__arm64__) || defined(__x86_64__)
 extern void hs_switch_block_func();
