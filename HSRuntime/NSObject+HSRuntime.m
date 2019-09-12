@@ -279,4 +279,63 @@ static char executeBlocksKey;
     return [self hs_prettyValuesWithDepth:5];
 }
 
++ (void)captureImageAddress {
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        LOG(@"archieve file...");
+        NSMutableArray<NSString*> *array = [NSMutableArray array];
+        uint32_t dyld_image_count = _dyld_image_count();
+        for (int i=0; i<dyld_image_count; i++) {
+            const char *name = _dyld_get_image_name(i);
+            const struct mach_header* header = _dyld_get_image_header(i);
+            Dl_info info;
+            int ret = dladdr(header, &info);
+            [array addObject:[NSString stringWithFormat:@"%p\t(imageName: %s %d)\n", info.dli_fbase, name, ret]];
+            
+            unsigned int classCount = 0;
+            const char ** classes = objc_copyClassNamesForImage(name, &classCount);
+            for (int j=0; j<classCount; j++) {
+                NSString *className = [NSString stringWithFormat:@"%s", classes[j]];
+                //                [array addObject:[NSString stringWithFormat:@"%@(-):\n", className]];
+                Class clz = objc_getClass(classes[j]);
+                unsigned int methodCount = 0;
+                Method *methods = class_copyMethodList(clz, &methodCount);
+                for (int k=0; k<methodCount; k++) {
+                    IMP imp = method_getImplementation(methods[k]);
+                    SEL sel = method_getName(methods[k]);
+                    [array addObject:[NSString stringWithFormat:@"%p\t-[%@ %@]\n", imp, className, NSStringFromSelector(sel)]];
+                }
+                if (methodCount) {
+                    free(methods);
+                }
+                
+                //                [array addObject:[NSString stringWithFormat:@"%s(+):\n", classes[j]]];
+                Class metaclz = objc_getMetaClass(classes[j]);
+                methodCount = 0;
+                methods = class_copyMethodList(metaclz, &methodCount);
+                for (int k=0; k<methodCount; k++) {
+                    IMP imp = method_getImplementation(methods[k]);
+                    SEL sel = method_getName(methods[k]);
+                    [array addObject:[NSString stringWithFormat:@"%p\t+[%@ %@]\n", imp, className, NSStringFromSelector(sel)]];
+                }
+                if (methodCount) {
+                    free(methods);
+                }
+            }
+            if (classCount) {
+                free(classes);
+            }
+        }
+        
+        NSString *filePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/classes.txt"];
+        [[[NSFileManager alloc] init] removeItemAtPath:filePath error:nil];
+        [[[NSFileManager alloc] init] createFileAtPath:filePath contents:[NSData data] attributes:nil];
+        NSFileHandle *fileHandler = [NSFileHandle fileHandleForWritingAtPath:filePath];
+        [array enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [fileHandler writeData:[obj dataUsingEncoding:NSUTF8StringEncoding]];
+        }];
+        LOG(@"archieve file!!!");
+        //        LOG(@"%@", array);
+    });
+}
+
 @end
